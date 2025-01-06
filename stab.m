@@ -10,8 +10,6 @@ clc;
 
 % requisitos: cm_alpha < 0 & cm_0 > 0 
 
-% contribuição da asa
-
 % cmacgw -> cm_alpha asa
 % cm0cgw -> cm_zero asa
 % hcg -> dist cg - bordo de ataque
@@ -20,14 +18,14 @@ clc;
 % cmac -> momento no ca
 % cl0w -> cl_aoa = 0
 % claw -> cl_alpha da asa
-% e0
-% arw
-% cm0t
-% vh
-% n
-% clat
-% iw
-% it 
+% e0 -> aoa induzido p/ aoa = 0
+% arw -> aspect ratio
+% cm0t -> cm_zero tail
+% vh -> volume de cauda
+% n -> eficiência de cauda
+% clat -> cl_alpha tail
+% iw -> incidência asa
+% it  -> incidência tail 
 
 cmac = 0;
 cl0w = 0;
@@ -80,6 +78,7 @@ clat = dados{11};
 iw = dados{12};
 it = dados{13};
 
+% contribuição asa 
 cmacgw = claw * ((hcg / cma) - (hac / cma));
 cm0cgw = cmac + cl0w * ((hcg / cma) - (hac / cma));
 
@@ -91,6 +90,7 @@ for aoa = 1:15
     % fprintf('Para aoa = %d, cmcgw = %.5f\n', aoa, cmcgw);
 end
 
+% contribuição empenagem 
 e0 = (57.3 * 2 * cl0w) / (pi * arw);
 
 cm0t = vh * n * clat * (iw - it + e0);
