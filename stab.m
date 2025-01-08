@@ -15,17 +15,21 @@ clc;
 % hcg -> dist cg - bordo de ataque
 % hac -> dist ca - bordo de ataque
 % cma -> corda media aerodinamica
-% cmac -> momento no ca
+% cmac -> momento ca
 % cl0w -> cl_aoa = 0
-% claw -> cl_alpha da asa
+% claw -> cl_alpha asa
 % e0 -> aoa induzido p/ aoa = 0
 % arw -> aspect ratio
 % cm0t -> cm_zero tail
-% vh -> volume de cauda
-% n -> eficiência de cauda
+% vh -> volume cauda
+% n -> eficiência cauda
 % clat -> cl_alpha tail
 % iw -> incidência asa
-% it  -> incidência tail 
+% it  -> incidência tail
+% cm0_acft -> cm_zero acft
+% cma_acft -> cm_alpha acft
+% cmcg_acft -> cm_cg acft
+ 
 
 cmac = 0;
 cl0w = 0;
@@ -41,6 +45,9 @@ n = 0;
 clat = 0;
 iw = 0;
 it = 0;
+cm0_acft = 0;
+cma_acft = 0;
+cmcg_acft = 0;
 
 dados = {cmac, cl0w, hcg, hac, cma, claw, arw, cm0t, vh, n, clat, iw, it};
 
@@ -78,7 +85,8 @@ clat = dados{11};
 iw = dados{12};
 it = dados{13};
 
-% contribuição asa 
+% contribuição asa
+ 
 cmacgw = claw * ((hcg / cma) - (hac / cma));
 cm0cgw = cmac + cl0w * ((hcg / cma) - (hac / cma));
 
@@ -91,6 +99,7 @@ for aoa = 1:15
 end
 
 % contribuição empenagem 
+
 e0 = (57.3 * 2 * cl0w) / (pi * arw);
 
 cm0t = vh * n * clat * (iw - it + e0);
@@ -108,7 +117,20 @@ for aoa = 1:15
     % fprintf('Para aoa = %d, cmcgt = %.5f\n', aoa, cmcgt);
 end
 
+% estabilidade longitudinal completa 
+
+cm0_acft = cm0cgw + cm0t;
+cma_acft = cmacgw + cmat;
+
+valores_cmcg_acft = zeros(1, 15);
+
+for aoa = 1:15
+    cmcg_acft = cm0_acft + cma_acft * aoa; 
+    valores_cmcgt_acft(aoa) = cmcg_acft;
+    % fprintf('Para aoa = %d, cmcg_acft = %.5f\n', aoa, cmcg_acft);
+end
 % gráfico contribuição asa 
+
 figure;
 plot(1:15, valores_cmcgw, '-o', 'LineWidth', 2, 'MarkerSize', 6);
 title('Gráfico de C_m_cg_w vs. AoA');
@@ -119,11 +141,23 @@ ylim([-0.19 0.16]);
 grid on; 
 
 % gráfico contribuição empenagem
+
 figure;
 plot(1:15, valores_cmcgt, '-o', 'LineWidth', 2, 'MarkerSize', 6);
 title('Gráfico de C_m_cg_t vs. AoA');
 xlabel('Ângulo de Ataque (AoA)');
 ylabel('C_m_cg_t');
+xlim([0 15]);
+ylim([-0.19 0.16]);
+grid on; 
+
+% gráfico estabilidade longitudinal completa
+
+figure;
+plot(1:15, valores_cmcgt_acft, '-o', 'LineWidth', 2, 'MarkerSize', 6);
+title('Gráfico de Cmcg_acft vs. AoA');
+xlabel('Ângulo de Ataque (AoA)');
+ylabel('Cmcg_acft');
 xlim([0 15]);
 ylim([-0.19 0.16]);
 grid on; 
