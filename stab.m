@@ -129,6 +129,7 @@ for aoa = 1:15
     valores_cmcgt_acft(aoa) = cmcg_acft;
     % fprintf('Para aoa = %d, cmcg_acft = %.5f\n', aoa, cmcg_acft);
 end
+
 % gráfico contribuição asa 
 
 figure;
